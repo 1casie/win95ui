@@ -61,7 +61,7 @@ A full Gemini protocol browser built on win95ui — tabs, history, gemtext rende
 swift run Gemini95Demo
 ```
 
-The demo shows off the chrome without the network stack. The real browser lives at [`../gemini`](../gemini) — it fetches `gemini://` URLs over TLS on port 1965, parses gemtext, and renders it all in pixel-perfect R95 Sans Serif with BigBlueTerm437 for ASCII art.
+This is the real browser — it fetches `gemini://` URLs over TLS on port 1965, parses gemtext, and renders it all in pixel-perfect R95 Sans Serif with BigBlueTerm437 for ASCII art.
 
 Features:
 - **Tabs** — `W95TabStrip` with per-tab history and content
@@ -69,3 +69,5 @@ Features:
 - **Chicago95 icons** — pixel-perfect toolbar buttons
 - **Input prompts** — status 1x queries get a proper dialog
 - **No smoothing** — `setShouldSmoothFonts(false)` everywhere, maximum crunch
+
+Headless testing: `--fetch gemini://url` prints the response, `--render out.png` snapshots a page.
