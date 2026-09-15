@@ -337,6 +337,50 @@ public final class W95TabStrip: NSControl {
     }
 }
 
+/// A W95 button that draws a pixel-art icon (e.g. Chicago95 PNGs).
+/// Icons are loaded from the caller's bundle by name.
+public final class W95IconButton: NSControl {
+    public let icon: NSImage?
+    private var pressed = false { didSet { needsDisplay = true } }
+
+    /// Load an icon from a bundle. `bundle` defaults to `.main` — pass
+    /// `Bundle.module` if the icon lives in a SwiftPM resource bundle.
+    public init(iconName: String, bundle: Bundle = .main) {
+        self.icon = bundle.url(forResource: iconName, withExtension: "png")
+            .flatMap { NSImage(contentsOf: $0) }
+        super.init(frame: .zero)
+    }
+    required init?(coder: NSCoder) { fatalError() }
+
+    public override func draw(_ dirty: NSRect) {
+        let b = bounds
+        W95.face.setFill(); b.fill()
+        NSBezierPath.w95Raised(b.insetBy(dx: 0.5, dy: 0.5), pressed: pressed)
+        guard let icon else { return }
+        let o: CGFloat = pressed ? 1 : 0
+        let size: CGFloat = min(b.width, b.height) - 4
+        let r = NSRect(x: (b.width - size) / 2 + o, y: (b.height - size) / 2 + o,
+                       width: size, height: size)
+        icon.draw(in: r, from: .zero, operation: .sourceOver, fraction: 1)
+    }
+
+    public override func mouseDown(with e: NSEvent) {
+        guard isEnabled else { return }
+        pressed = true
+        var inside = true
+        window?.trackEvents(matching: [.leftMouseDragged, .leftMouseUp],
+                            timeout: Date.distantFuture.timeIntervalSinceNow,
+                            mode: .eventTracking) { ev, stop in
+            guard let ev else { stop.pointee = true; return }
+            inside = self.bounds.contains(self.convert(ev.locationInWindow, from: nil))
+            self.pressed = inside
+            if ev.type == .leftMouseUp { stop.pointee = true }
+        }
+        pressed = false
+        if inside { sendAction(action, to: target) }
+    }
+}
+
 /// In-window menu bar: File Edit View Help style. Items pop NSMenus.
 public final class W95MenuBar: NSView {
     public var menus: [(title: String, items: [String])] = [] { didSet { needsDisplay = true } }
