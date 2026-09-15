@@ -36,11 +36,22 @@ public enum W95 {
         return bold ? NSFont.boldSystemFont(ofSize: size) : NSFont.systemFont(ofSize: size)
     }
 
+    /// Fixedsys Excelsior — the classic monospace bitmap font, for preformatted
+    /// text and anywhere alignment matters.
+    public static func monoFont(_ size: CGFloat = 12) -> NSFont {
+        registerFonts()
+        if let f = NSFont(name: "Fixedsys", size: size) { return f }
+        return NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
+    }
+
     private static func registerFonts() {
         // CTFontManagerRegisterFontsForURL is idempotent; just call it every time.
         for size in [8, 10, 12, 14, 18, 24] {
             let name = "r95-sans-\(size)pt"
             guard let url = Bundle.module.url(forResource: name, withExtension: "ttf") else { continue }
+            CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+        }
+        if let url = Bundle.module.url(forResource: "FSEX300", withExtension: "ttf") {
             CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
         }
     }
