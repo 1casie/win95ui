@@ -9,7 +9,7 @@ let package = Package(
         .executable(name: "Win95Demo", targets: ["Win95Demo"]),
     ],
     targets: [
-        .target(name: "Win95"),
+        .target(name: "Win95", resources: [.process("Resources")]),
         .executableTarget(name: "Win95Demo", dependencies: ["Win95"]),
     ]
 )

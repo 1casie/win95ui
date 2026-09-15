@@ -1,4 +1,5 @@
 import AppKit
+import CoreText
 
 /// The Windows 95 color scheme, cross-checked against Chicago95's gtkrc.
 public enum W95 {
@@ -17,10 +18,31 @@ public enum W95 {
     public static let tooltipBG   = NSColor(calibratedRed: 1.0, green: 1.0, blue: 0.882, alpha: 1)   // FFFFE1
     public static let link        = NSColor(calibratedRed: 0.0, green: 0.0, blue: 0.502, alpha: 1)
 
-    /// Closest stock font to MS Sans Serif / Tahoma.
+    /// The real MS Sans Serif look, via R95 bitmap-to-TTF conversions.
+    /// Falls back to Tahoma/system if the bundled fonts aren't available.
     public static func font(_ size: CGFloat = 11, bold: Bool = false) -> NSFont {
+        registerFonts()
+        // R95 ships per-size bitmaps; pick the closest native size.
+        let r95Size: Int = switch size {
+        case ..<9: 8
+        case 9..<11: 10
+        case 11..<13: 12
+        case 13..<16: 14
+        case 16..<21: 18
+        default: 24
+        }
+        if let f = NSFont(name: "R95 Sans Serif \(r95Size)pt", size: size) { return f }
         if let f = NSFont(name: "Tahoma" + (bold ? "-Bold" : ""), size: size) { return f }
         return bold ? NSFont.boldSystemFont(ofSize: size) : NSFont.systemFont(ofSize: size)
+    }
+
+    private static func registerFonts() {
+        // CTFontManagerRegisterFontsForURL is idempotent; just call it every time.
+        for size in [8, 10, 12, 14, 18, 24] {
+            let name = "r95-sans-\(size)pt"
+            guard let url = Bundle.module.url(forResource: name, withExtension: "ttf", subdirectory: "fonts") else { continue }
+            CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+        }
     }
 }
 
