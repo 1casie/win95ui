@@ -14,6 +14,9 @@ public final class W95Window: NSWindow {
         backgroundColor = .clear
         hasShadow = true
         isMovableByWindowBackground = false
+        // Borderless windows crash in _NSWindowTransformAnimation dealloc if
+        // released while the close animation is still running. Keep it alive.
+        isReleasedWhenClosed = false
         contentView = frameView
         frameView.windowTitle = title
         minSize = NSSize(width: 160, height: 80)
