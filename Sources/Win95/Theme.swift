@@ -19,6 +19,7 @@ public enum W95 {
     public static let link        = NSColor(calibratedRed: 0.0, green: 0.0, blue: 0.502, alpha: 1)
 
     /// The real MS Sans Serif look, via R95 bitmap-to-TTF conversions.
+    /// Cascades to GNU Unifont for glyphs R95 doesn't cover (CJK, emoji, etc).
     /// Falls back to Tahoma/system if the bundled fonts aren't available.
     public static func font(_ size: CGFloat = 11, bold: Bool = false) -> NSFont {
         registerFonts()
@@ -31,17 +32,36 @@ public enum W95 {
         case 16..<21: 18
         default: 24
         }
-        if let f = NSFont(name: "R95 Sans Serif \(r95Size)pt", size: size) { return f }
+        let r95Name = "R95 Sans Serif \(r95Size)pt"
+        if let base = NSFont(name: r95Name, size: size) {
+            // Cascade to Unifont for missing glyphs — keeps the bitmap look.
+            if let uni = NSFont(name: "Unifont", size: size) {
+                let desc = base.fontDescriptor.addingAttributes([
+                    .cascadeList: [uni.fontDescriptor]
+                ])
+                if let cascaded = NSFont(descriptor: desc, size: size) { return cascaded }
+            }
+            return base
+        }
         if let f = NSFont(name: "Tahoma" + (bold ? "-Bold" : ""), size: size) { return f }
         return bold ? NSFont.boldSystemFont(ofSize: size) : NSFont.systemFont(ofSize: size)
     }
 
-    /// Fixedsys Excelsior — the classic monospace bitmap font, for preformatted
-    /// text and anywhere alignment matters.
+    /// BigBlueTerm437 for preformatted text — the classic terminal bitmap.
+    /// Cascades to Unifont for missing glyphs.
     public static func monoFont(_ size: CGFloat = 12) -> NSFont {
         registerFonts()
-        if let f = NSFont(name: "Fixedsys", size: size) { return f }
-        return NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
+        let base = NSFont(name: "BigBlueTerm437 Nerd Font Mono", size: size)
+            ?? NSFont(name: "BigBlueTerm437NFM", size: size)
+            ?? NSFont(name: "Fixedsys", size: size)
+            ?? NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
+        if let uni = NSFont(name: "Unifont", size: size) {
+            let desc = base.fontDescriptor.addingAttributes([
+                .cascadeList: [uni.fontDescriptor]
+            ])
+            if let cascaded = NSFont(descriptor: desc, size: size) { return cascaded }
+        }
+        return base
     }
 
     private static func registerFonts() {
