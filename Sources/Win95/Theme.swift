@@ -40,7 +40,7 @@ public enum W95 {
         // CTFontManagerRegisterFontsForURL is idempotent; just call it every time.
         for size in [8, 10, 12, 14, 18, 24] {
             let name = "r95-sans-\(size)pt"
-            guard let url = Bundle.module.url(forResource: name, withExtension: "ttf", subdirectory: "fonts") else { continue }
+            guard let url = Bundle.module.url(forResource: name, withExtension: "ttf") else { continue }
             CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
         }
     }
