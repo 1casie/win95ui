@@ -52,3 +52,20 @@ A Rust Minesweeper that talks to the same ABI lives in [`Demos/minesweeper`](Dem
 swift build
 cd Demos/minesweeper && cargo run
 ```
+
+## Gemini 95
+
+A full Gemini protocol browser built on win95ui — tabs, history, gemtext rendering, input prompts, the works. It's what happens when you take "authentic Windows 95" seriously enough to vendor the actual MS Sans Serif bitmaps.
+
+```sh
+swift run Gemini95Demo
+```
+
+The demo shows off the chrome without the network stack. The real browser lives at [`../gemini`](../gemini) — it fetches `gemini://` URLs over TLS on port 1965, parses gemtext, and renders it all in pixel-perfect R95 Sans Serif with BigBlueTerm437 for ASCII art.
+
+Features:
+- **Tabs** — `W95TabStrip` with per-tab history and content
+- **Real fonts** — R95 Sans Serif (MS Sans Serif bitmaps), BigBlueTerm437 for ` ``` ` blocks, GNU Unifont cascade for CJK/emoji
+- **Chicago95 icons** — pixel-perfect toolbar buttons
+- **Input prompts** — status 1x queries get a proper dialog
+- **No smoothing** — `setShouldSmoothFonts(false)` everywhere, maximum crunch
