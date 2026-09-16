@@ -108,6 +108,11 @@ if wanted("ControlTheme") {
               binary: swiftBuild.appendingPathComponent("ControlTheme"),
               plist: cwd.appendingPathComponent("Demos/ControlTheme/Info.plist"))
 }
+if wanted("WebKitty") {
+    try mkapp(name: "WebKitty",
+              binary: swiftBuild.appendingPathComponent("WebKitty"),
+              plist: cwd.appendingPathComponent("Demos/WebKitty/Info.plist"))
+}
 if wanted("Minesweeper") {
     // Rust over the C ABI: it needs the dylib next to it.
     let app = outDir.appendingPathComponent("Minesweeper.app")

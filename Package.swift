@@ -17,6 +17,8 @@ let package = Package(
                          resources: [.process("Resources")]),
         .executableTarget(name: "ControlTheme", dependencies: ["Win95"],
                          path: "Demos/ControlTheme"),
+        .executableTarget(name: "WebKitty", dependencies: ["Win95"],
+                         path: "Demos/WebKitty"),
         .executableTarget(name: "BundleApps", path: "Tools/BundleApps"),
     ]
 )

@@ -17,13 +17,14 @@ Want real apps instead of command line builds:
 swift run bundle-apps
 ```
 
-That drops Win95 Demo, Gemini 95, ControlTheme and Minesweeper into `Apps/` as double-clickable `.app` bundles. It matches its own build config: plain `swift run bundle-apps` stays in debug (fast), `swift run -c release bundle-apps` ships release. Pass `--debug` / `--release` to force it, `--only ControlTheme` for just one app, or a different output dir as the last arg.
+That drops Win95 Demo, Gemini 95, ControlTheme, WebKitty and Minesweeper into `Apps/` as double-clickable `.app` bundles. It matches its own build config: plain `swift run bundle-apps` stays in debug (fast), `swift run -c release bundle-apps` ships release. Pass `--debug` / `--release` to force it, `--only ControlTheme` for just one app, or a different output dir as the last arg.
 
 ## Demos
 
 - `Sources/Win95Demo` — control showcase. Pass `--render /tmp/win95.png` to snapshot it offscreen.
 - [`Demos/Gemini95Demo`](Demos/Gemini95Demo) — Gemini browser. Tabs with per-tab history, gemtext rendering in R95 Sans Serif with BigBlueTerm437 for pre blocks and Unifont fallback for CJK/emoji, Chicago95 toolbar icons, dialogs for input prompts, font smoothing off. Headless: `--fetch gemini://url` prints the response, `--render out.png` snapshots a page.
 - [`Demos/ControlTheme`](Demos/ControlTheme) — the theme editor, see below. `swift run bundle-apps --only ControlTheme` packages just that one.
+- [`Demos/WebKitty`](Demos/WebKitty) — Hacker News in Win95 chrome. A WebKit view (`W95WebView`) dressed up with a W95 toolbar, address field, progress bar and status bar. `swift run WebKitty`, because the small web deserves the teal desktop.
 - [`Demos/minesweeper`](Demos/minesweeper) — Rust Minesweeper over the C ABI. Needs `swift build` first (it links the dylib), then `cargo run` in its dir.
 
 ## Theming
