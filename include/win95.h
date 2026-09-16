@@ -34,6 +34,14 @@ void w95_init(void);
 void w95_run(void);
 void w95_install_menus(const char *app_name);
 
+/* Theme: dotfile-backed scheme shared by every linked app.
+ * The file is created with stock 95 colors on first launch.
+ * ControlTheme.app edits it; linked apps reload live. */
+void w95_theme_reload(void);
+void w95_theme_reset(void);
+/* malloc'd UTF-8 path to the theme file; caller frees. */
+char *w95_theme_path(void);
+
 /* Hop `cb` onto the main thread. Safe from any thread. */
 void w95_dispatch_main(w95_action_cb cb, void *ud);
 

@@ -1,8 +1,6 @@
 # win95ui
 
-A macOS Swift UI library for creating Windows 95-like applications natively.
-
-Widgets, chrome, and the classic teal desktop — drawn with AppKit, not a web view. Use it from Swift, or drive it from C / Rust / anything else that can call a C ABI via the header in [`include/win95.h`](include/win95.h).
+Windows 95 UI kit for macOS. Native AppKit, no web views. Use it from Swift, or from C / Rust / anything that can call C (see [`include/win95.h`](include/win95.h)).
 
 Requires macOS 14+ and Swift 6.
 
@@ -13,7 +11,59 @@ swift build
 swift run Win95Demo
 ```
 
-Pass `--render /tmp/win95.png` to snapshot the demo offscreen.
+Want real apps instead of command line builds:
+
+```sh
+swift run bundle-apps
+```
+
+That drops Win95 Demo, Gemini 95, ControlTheme and Minesweeper into `Apps/` as double-clickable `.app` bundles. It matches its own build config: plain `swift run bundle-apps` stays in debug (fast), `swift run -c release bundle-apps` ships release. Pass `--debug` / `--release` to force it, `--only ControlTheme` for just one app, or a different output dir as the last arg.
+
+## Demos
+
+- `Sources/Win95Demo` — control showcase. Pass `--render /tmp/win95.png` to snapshot it offscreen.
+- [`Demos/Gemini95Demo`](Demos/Gemini95Demo) — Gemini browser. Tabs with per-tab history, gemtext rendering in R95 Sans Serif with BigBlueTerm437 for pre blocks and Unifont fallback for CJK/emoji, Chicago95 toolbar icons, dialogs for input prompts, font smoothing off. Headless: `--fetch gemini://url` prints the response, `--render out.png` snapshots a page.
+- [`Demos/ControlTheme`](Demos/ControlTheme) — the theme editor, see below. `swift run bundle-apps --only ControlTheme` packages just that one.
+- [`Demos/minesweeper`](Demos/minesweeper) — Rust Minesweeper over the C ABI. Needs `swift build` first (it links the dylib), then `cargo run` in its dir.
+
+## Theming
+
+Every app using win95ui reads its colors from one file:
+
+```
+~/.config/win95ui/theme.json
+```
+
+(`$XDG_CONFIG_HOME` is respected if set.) It gets created with stock 95 colors the first time any app launches. Edit it by hand or use the editor:
+
+```sh
+swift run ControlTheme
+```
+
+Saving there updates all running Win95 apps on the spot. The editor also does presets from the command line:
+
+```sh
+ControlTheme --list-presets
+ControlTheme --apply-preset "Hot Dog Stand"
+```
+
+## Theming in your own app
+
+Swift: nothing to do if you use `W95Window`, it starts the listener on init. All the `W95` colors are live reads from the current theme, so anything you draw with them follows the dotfile. If you roll your own windows, call this once at launch:
+
+```swift
+W95ThemeManager.shared.startIfNeeded()
+```
+
+To react to changes (refresh a cached color, rebuild a menu), observe `.w95ThemeChanged` on the default NotificationCenter. One gotcha: layer background colors you set once (like `layer?.backgroundColor = W95.face.cgColor`) will not refresh until relaunch, so prefer drawing with the theme colors in `draw()` where you can. Presets live in `W95Theme.presets`, and `W95ThemeManager.shared.save(theme)` writes the file and tells every other app.
+
+C / Rust: `w95_init()` starts the listener, so you already get it. The header has three extra calls:
+
+```c
+w95_theme_reload();  /* re-read the dotfile now */
+w95_theme_reset();   /* back to stock 95 colors */
+char *p = w95_theme_path(); /* where the file lives, free it after */
+```
 
 ## Swift
 
@@ -28,13 +78,13 @@ win.clientArea.addSubview(ok)
 win.makeKeyAndOrderFront(nil)
 ```
 
-The library ships raised/sunken bevels, caption buttons, a status bar, checkboxes, radios, list boxes, combo boxes, sliders, spinners, progress bars, tabs, menus, a taskbar, and a Minesweeper board.
+Has the usual stuff: bevels, caption buttons, status bar, checkboxes, radios, list boxes, combo boxes, sliders, spinners, progress bars, tabs, menus, a taskbar, and a Minesweeper board.
 
 `clientArea` is flipped: `y = 0` is the top.
 
 ## C FFI
 
-`swift build` produces `libWin95.dylib`. Other languages link that and include the C header:
+`swift build` makes `libWin95.dylib`. Link it and include the C header:
 
 ```c
 #include "win95.h"
@@ -44,30 +94,4 @@ w95_handle win = w95_window_new("Hello", 200, 200, 320, 180);
 w95_run();
 ```
 
-Every call except `w95_dispatch_main` must happen on the main thread. Callbacks fire on main.
-
-A Rust Minesweeper that talks to the same ABI lives in [`Demos/minesweeper`](Demos/minesweeper).
-
-```sh
-swift build
-cd Demos/minesweeper && cargo run
-```
-
-## Gemini 95
-
-A full Gemini protocol browser built on win95ui — tabs, history, gemtext rendering, input prompts, the works. It's what happens when you take "authentic Windows 95" seriously enough to vendor the actual MS Sans Serif bitmaps. It lives in [`Demos/Gemini95Demo`](Demos/Gemini95Demo).
-
-```sh
-swift run Gemini95Demo
-```
-
-This is the real browser — it fetches `gemini://` URLs over TLS on port 1965, parses gemtext, and renders it all in pixel-perfect R95 Sans Serif with BigBlueTerm437 for ASCII art.
-
-Features:
-- **Tabs** — `W95TabStrip` with per-tab history and content
-- **Real fonts** — R95 Sans Serif (MS Sans Serif bitmaps), BigBlueTerm437 for ` ``` ` blocks, GNU Unifont cascade for CJK/emoji
-- **Chicago95 icons** — pixel-perfect toolbar buttons
-- **Input prompts** — status 1x queries get a proper dialog
-- **No smoothing** — `setShouldSmoothFonts(false)` everywhere, maximum crunch
-
-Headless testing: `--fetch gemini://url` prints the response, `--render out.png` snapshots a page.
+Everything except `w95_dispatch_main` has to run on the main thread. Callbacks come back on main.

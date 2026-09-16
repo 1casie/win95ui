@@ -7,6 +7,7 @@ let package = Package(
     products: [
         .library(name: "Win95", type: .dynamic, targets: ["Win95"]),
         .executable(name: "Win95Demo", targets: ["Win95Demo"]),
+        .executable(name: "bundle-apps", targets: ["BundleApps"]),
     ],
     targets: [
         .target(name: "Win95", resources: [.process("Resources")]),
@@ -14,5 +15,8 @@ let package = Package(
         .executableTarget(name: "Gemini95Demo", dependencies: ["Win95"],
                          path: "Demos/Gemini95Demo",
                          resources: [.process("Resources")]),
+        .executableTarget(name: "ControlTheme", dependencies: ["Win95"],
+                         path: "Demos/ControlTheme"),
+        .executableTarget(name: "BundleApps", path: "Tools/BundleApps"),
     ]
 )

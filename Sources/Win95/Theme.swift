@@ -2,21 +2,23 @@ import AppKit
 import CoreText
 
 /// The Windows 95 color scheme, cross-checked against Chicago95's gtkrc.
+/// Colors come from the live W95ThemeManager so every linked app follows
+/// the dotfile edited by ControlTheme. Fonts stay static.
 public enum W95 {
-    public static let face       = NSColor(calibratedRed: 0.753, green: 0.753, blue: 0.753, alpha: 1) // C0C0C0 buttonface
-    public static let highlight  = NSColor.white                                                     // buttonhilight
-    public static let light      = NSColor(calibratedRed: 0.875, green: 0.875, blue: 0.875, alpha: 1) // DFDFDF buttonlight
-    public static let shadow     = NSColor(calibratedRed: 0.502, green: 0.502, blue: 0.502, alpha: 1) // 808080 buttonshadow
-    public static let darkShadow = NSColor.black                                                     // buttondkshadow
+    public static var face: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.face) }
+    public static var highlight: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.highlight) }
+    public static var light: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.light) }
+    public static var shadow: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.shadow) }
+    public static var darkShadow: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.darkShadow) }
     // Chicago95: title bars are FLAT — the navy→blue gradient is a Win98 invention.
-    public static let titleActive       = NSColor(calibratedRed: 0.0, green: 0.0, blue: 0.502, alpha: 1)     // 000080
-    public static let titleInactive     = NSColor(calibratedRed: 0.502, green: 0.502, blue: 0.502, alpha: 1) // 808080
-    public static let titleTextActive   = NSColor.white
-    public static let titleTextInactive = NSColor(calibratedRed: 0.753, green: 0.753, blue: 0.753, alpha: 1)
-    public static let desktopTeal = NSColor(calibratedRed: 0.0, green: 0.502, blue: 0.502, alpha: 1) // 008080
-    public static let selection   = NSColor(calibratedRed: 0.0, green: 0.0, blue: 0.502, alpha: 1)
-    public static let tooltipBG   = NSColor(calibratedRed: 1.0, green: 1.0, blue: 0.882, alpha: 1)   // FFFFE1
-    public static let link        = NSColor(calibratedRed: 0.0, green: 0.0, blue: 0.502, alpha: 1)
+    public static var titleActive: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.titleActive) }
+    public static var titleInactive: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.titleInactive) }
+    public static var titleTextActive: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.titleTextActive) }
+    public static var titleTextInactive: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.titleTextInactive) }
+    public static var desktopTeal: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.desktopTeal) }
+    public static var selection: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.selection) }
+    public static var tooltipBG: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.tooltipBG) }
+    public static var link: NSColor { NSColor(w95Hex: W95ThemeManager.shared.current.link) }
 
     /// The real MS Sans Serif look, via R95 bitmap-to-TTF conversions.
     /// Cascades to GNU Unifont for glyphs R95 doesn't cover (CJK, emoji, etc).

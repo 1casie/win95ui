@@ -6,6 +6,7 @@ public final class W95Window: NSWindow {
     public let frameView = W95FrameView()
 
     public init(title: String, contentRect: NSRect) {
+        W95ThemeManager.shared.startIfNeeded()
         super.init(contentRect: contentRect,
                    styleMask: [.borderless, .resizable, .miniaturizable],
                    backing: .buffered, defer: false)

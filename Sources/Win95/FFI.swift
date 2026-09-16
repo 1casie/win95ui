@@ -16,6 +16,22 @@ public typealias W95ActionCB = @convention(c) (UnsafeMutableRawPointer?) -> Void
 public func w95_init() {
     _ = NSApplication.shared
     NSApp.setActivationPolicy(.regular)
+    W95ThemeManager.shared.startIfNeeded()
+}
+
+@_cdecl("w95_theme_reload")
+public func w95_theme_reload() {
+    W95ThemeManager.shared.reload()
+}
+
+@_cdecl("w95_theme_reset")
+public func w95_theme_reset() {
+    W95ThemeManager.shared.resetToDefault()
+}
+
+@_cdecl("w95_theme_path")
+public func w95_theme_path() -> UnsafeMutablePointer<CChar> {
+    strdup(W95ThemeManager.themeFileURL.path)
 }
 
 @_cdecl("w95_run")
