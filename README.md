@@ -55,7 +55,7 @@ cd Demos/minesweeper && cargo run
 
 ## Gemini 95
 
-A full Gemini protocol browser built on win95ui — tabs, history, gemtext rendering, input prompts, the works. It's what happens when you take "authentic Windows 95" seriously enough to vendor the actual MS Sans Serif bitmaps.
+A full Gemini protocol browser built on win95ui — tabs, history, gemtext rendering, input prompts, the works. It's what happens when you take "authentic Windows 95" seriously enough to vendor the actual MS Sans Serif bitmaps. It lives in [`Demos/Gemini95Demo`](Demos/Gemini95Demo).
 
 ```sh
 swift run Gemini95Demo

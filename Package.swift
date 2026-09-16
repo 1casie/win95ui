@@ -12,6 +12,7 @@ let package = Package(
         .target(name: "Win95", resources: [.process("Resources")]),
         .executableTarget(name: "Win95Demo", dependencies: ["Win95"]),
         .executableTarget(name: "Gemini95Demo", dependencies: ["Win95"],
+                         path: "Demos/Gemini95Demo",
                          resources: [.process("Resources")]),
     ]
 )
