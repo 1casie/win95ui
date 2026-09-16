@@ -350,6 +350,14 @@ public final class W95IconButton: NSControl {
             .flatMap { NSImage(contentsOf: $0) }
         super.init(frame: .zero)
     }
+
+    /// Load one of the shared Chicago95 nav icons (go-home, go-next,
+    /// go-previous, view-refresh) vendored into win95ui itself.
+    public init(win95Icon name: String) {
+        self.icon = Bundle.module.url(forResource: name, withExtension: "png")
+            .flatMap { NSImage(contentsOf: $0) }
+        super.init(frame: .zero)
+    }
     required init?(coder: NSCoder) { fatalError() }
 
     public override func draw(_ dirty: NSRect) {

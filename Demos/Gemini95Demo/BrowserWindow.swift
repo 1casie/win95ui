@@ -24,7 +24,7 @@ private final class W95DocWell: NSView {
     }
 }
 
-/// W95IconButton moved upstream to win95ui — use `W95IconButton(iconName:bundle:)`.
+/// W95IconButton moved upstream to win95ui — use `W95IconButton(win95Icon:)`.
 
 /// Root content: menu bar on top, tab strip under it, toolbar under that,
 /// document well filling the rest. All laid out in flipped coordinates.
@@ -34,10 +34,10 @@ private final class BrowserRootView: NSView {
     let toolbar = W95FlippedView()
     let well = W95DocWell()
 
-    let backBtn = W95IconButton(iconName: "go-previous", bundle: .module)
-    let fwdBtn = W95IconButton(iconName: "go-next", bundle: .module)
-    let reloadBtn = W95IconButton(iconName: "view-refresh", bundle: .module)
-    let homeBtn = W95IconButton(iconName: "go-home", bundle: .module)
+    let backBtn = W95IconButton(win95Icon: "go-previous")
+    let fwdBtn = W95IconButton(win95Icon: "go-next")
+    let reloadBtn = W95IconButton(win95Icon: "view-refresh")
+    let homeBtn = W95IconButton(win95Icon: "go-home")
     let address = W95TextField(frame: .zero)
     let goBtn = W95Button(title: "Go", isDefault: true)
 
